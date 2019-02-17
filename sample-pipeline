@@ -3,10 +3,10 @@ kind: BuildConfig
 metadata:
   name: myfirstpipeline
   labels:
-    name: myfirstpipeline
-  annotations:
-    pipeline.alpha.openshift.io/uses: '[{"name": "php", "namespace": "", "kind": "DeploymentConfig"}]'
-spec:
+    app: jenkins-pipeline-example
+    name: sample-pipeline
+    template: application-template-sample-pipeline
+  spec:
   runPolicy: Serial
   strategy:
     type: JenkinsPipeline
@@ -14,15 +14,15 @@ spec:
 	  jenkinsfile: |-
 	  node('') {
 	    stage 'buildInDev'
-		   openshiftBuild(namespace: 'dev',buildConfig: 'php', showBuildLogs: 'true')
+		  openshiftBuild(namespace: 'dev',buildConfig: 'php', showBuildLogs: 'true')
 		stage 'deployInDev'
-		   openshiftDeploy(namespace: 'dev',deploymentConfig: 'php')
-		   openshiftScale(namespace: 'dev',deploymentConfig: 'php',replicaCount: '2')"
+		  openshiftDeploy(namespace: 'dev',deploymentConfig: 'php')
+		  openshiftScale(namespace: 'dev',deploymentConfig: 'php',replicaCount: '2')"
 		stage 'deployInQA'
-		input 'Proceeed ?'
-            openshiftTag(namespace: 'dev', sourceStream: 'php',  sourceTag: 'latest', destinationStream: 'php', destinationTag: 'promoteToQA')
-            openshiftDeploy(namespace:'qa',deploymentConfig: 'php')
-            openshiftScale(namespace:'qa',deploymentConfig: 'php',replicaCount: '5')
+		  input 'Proceeed ?'
+            	  openshiftTag(namespace: 'dev', sourceStream: 'php',  sourceTag: 'latest', destinationStream: 'php', destinationTag: 'promoteToQA')
+            	  openshiftDeploy(namespace:'qa',deploymentConfig: 'php')
+            	  openshiftScale(namespace:'qa',deploymentConfig: 'php',replicaCount: '5')
 output:
 resources:
 postCommit:
