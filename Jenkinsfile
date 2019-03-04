@@ -1,9 +1,10 @@
-/* Requires the Docker Pipeline plugin */
-node('docker') {
-    checkout scm
-    stage('Build') {
-        docker.image('php').inside {
-            sh 'php --version'
+pipeline {
+    agent { docker { image 'php' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'php --version'
+            }
         }
     }
 }
